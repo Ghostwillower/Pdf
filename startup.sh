@@ -14,11 +14,13 @@ if ! command -v cloudflared &> /dev/null; then
     echo "To install cloudflared, visit: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation/"
 else
     # Execute cloudflared tunnel route DNS command
+    # Configure the tunnel name (pcmcp) and domain (mcp.pcmcp.tech) as needed
+    # Usage: cloudflared tunnel route dns <tunnel-name> <domain>
     if cloudflared tunnel route dns pcmcp mcp.pcmcp.tech; then
         echo "Cloudflared tunnel route DNS configured successfully!"
     else
-        echo "Error: Failed to configure cloudflared tunnel route DNS"
-        exit 1
+        echo "Warning: Failed to configure cloudflared tunnel route DNS"
+        echo "Please verify your tunnel configuration and try again manually"
     fi
 fi
 
@@ -37,4 +39,4 @@ echo ""
 # Option 2: Using Node.js http-server
 # npx http-server -p 8080
 
-echo "Startup script completed successfully!"
+echo "Startup script completed!"
