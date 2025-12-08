@@ -8,10 +8,14 @@ A powerful client-side web application for merging, reordering, rotating, and ed
 - **Visual Page Preview**: See thumbnail previews of all pages in a clean grid layout
 - **Drag & Drop Reordering**: Easily rearrange pages by dragging and dropping
 - **Page Rotation**: Rotate individual pages in 90° increments
+- **Rotate All Pages**: Rotate all pages at once with a single click
 - **Page Deletion**: Remove unwanted pages from your document
+- **Page Duplication**: Duplicate any page with one click
+- **Insert Blank Pages**: Add blank pages anywhere in your document
 - **Merge PDFs**: Combine multiple PDFs into a single document
 - **Client-Side Processing**: All processing happens in your browser - no server upload required
 - **Privacy-Focused**: Your PDFs never leave your computer
+- **Ready for Web Hosting**: Deploy to GitHub Pages, Netlify, Vercel, or any static host
 
 ## Technologies Used
 
@@ -59,9 +63,30 @@ http://localhost:8080
 2. **View Pages**: All pages from all PDFs will be displayed in a grid
 3. **Reorder Pages**: Click and drag page cards to reorder them
 4. **Rotate Pages**: Click the "🔄 Rotate" button on any page to rotate it 90° clockwise
-5. **Delete Pages**: Click the "🗑️ Delete" button to remove a page
-6. **Clear All**: Click "🗑️ Clear All" to remove all loaded pages
-7. **Download**: Click "⬇️ Download PDF" to save your edited PDF as `output.pdf`
+5. **Duplicate Pages**: Click the "📋 Duplicate" button to create a copy of any page
+6. **Delete Pages**: Click the "🗑️ Delete" button to remove a page
+7. **Insert Blank Page**: Click "➕ Blank Page" to add a blank page at the end
+8. **Rotate All**: Click "🔄 Rotate All" to rotate all pages 90° clockwise
+9. **Clear All**: Click "🗑️ Clear All" to remove all loaded pages
+10. **Download**: Click "⬇️ Download PDF" to save your edited PDF as `output.pdf`
+
+## Deployment
+
+PDF Knife is ready to be deployed as a website! It's a 100% client-side application with no backend requirements.
+
+### Quick Deploy:
+
+- **GitHub Pages**: Already configured with workflow in `.github/workflows/deploy.yml`
+- **Netlify**: Configuration ready in `netlify.toml` - just connect your repo
+- **Vercel**: Configuration ready in `vercel.json` - one-click deploy
+
+📖 **[See Full Deployment Guide](DEPLOYMENT.md)** for detailed instructions on deploying to various platforms.
+
+### Deploy Now:
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/Ghostwillower/Pdf)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Ghostwillower/Pdf)
 
 ## File Structure
 

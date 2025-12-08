@@ -99,6 +99,24 @@ body {
     background: #38a169;
 }
 
+.btn-info {
+    background: #4299e1;
+    color: white;
+}
+
+.btn-info:hover {
+    background: #3182ce;
+}
+
+.btn-duplicate {
+    background: #9f7aea;
+    color: white;
+}
+
+.btn-duplicate:hover {
+    background: #805ad5;
+}
+
 .btn-large {
     padding: 1rem 2rem;
     font-size: 1.1rem;
@@ -204,10 +222,12 @@ body {
     display: flex;
     gap: 0.5rem;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 .page-actions button {
     flex: 1;
+    min-width: 70px;
     padding: 0.5rem;
     border: none;
     border-radius: 6px;
