@@ -4,6 +4,9 @@ import * as pdfjsLib from './lib/pdf.min.mjs';
 // Initialize PDF.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = './lib/pdf.worker.min.mjs';
 
+// Access pdf-lib from window (loaded via script tag)
+const { PDFDocument, degrees } = window.PDFLib;
+
 // Global state
 let pages = []; // Array of page objects: {id, sourceIndex, pageNumber, rotation, pdfDoc}
 let loadedPDFs = []; // Array of loaded PDFDocument objects from pdf-lib
@@ -54,7 +57,7 @@ async function loadPDF(file) {
         const arrayBuffer = await file.arrayBuffer();
         
         // Load with pdf-lib for later assembly
-        const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+        const pdfDoc = await PDFDocument.load(arrayBuffer);
         const sourceIndex = loadedPDFs.length;
         loadedPDFs.push(pdfDoc);
 
@@ -275,7 +278,7 @@ async function downloadPDF() {
         showLoading();
 
         // Create new PDF document
-        const pdfDoc = await PDFLib.PDFDocument.create();
+        const pdfDoc = await PDFDocument.create();
 
         // Copy each page from source PDFs
         for (const page of pages) {
@@ -284,7 +287,7 @@ async function downloadPDF() {
             
             // Apply rotation if needed
             if (page.rotation !== 0) {
-                copiedPage.setRotation(PDFLib.degrees(page.rotation));
+                copiedPage.setRotation(degrees(page.rotation));
             }
 
             // Add the page to the new document
