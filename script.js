@@ -142,6 +142,7 @@ function createPageCard(page, index) {
     card.draggable = true;
     card.dataset.pageId = page.id;
     card.dataset.index = index;
+    card.tabIndex = 0; // Make focusable for keyboard navigation
 
     // Thumbnail container
     const thumbnailContainer = document.createElement('div');
@@ -159,6 +160,32 @@ function createPageCard(page, index) {
     // Action buttons
     const actions = document.createElement('div');
     actions.className = 'page-actions';
+
+    const moveUpBtn = document.createElement('button');
+    moveUpBtn.className = 'btn-move-up';
+    moveUpBtn.textContent = '⬆️';
+    moveUpBtn.title = 'Move Up';
+    moveUpBtn.onclick = (e) => {
+        e.stopPropagation();
+        movePageUp(page.id);
+    };
+    if (index === 0) {
+        moveUpBtn.disabled = true;
+        moveUpBtn.style.opacity = '0.5';
+    }
+
+    const moveDownBtn = document.createElement('button');
+    moveDownBtn.className = 'btn-move-down';
+    moveDownBtn.textContent = '⬇️';
+    moveDownBtn.title = 'Move Down';
+    moveDownBtn.onclick = (e) => {
+        e.stopPropagation();
+        movePageDown(page.id);
+    };
+    if (index === pages.length - 1) {
+        moveDownBtn.disabled = true;
+        moveDownBtn.style.opacity = '0.5';
+    }
 
     const rotateBtn = document.createElement('button');
     rotateBtn.className = 'btn-rotate';
@@ -184,6 +211,8 @@ function createPageCard(page, index) {
         duplicatePage(page.id);
     };
 
+    actions.appendChild(moveUpBtn);
+    actions.appendChild(moveDownBtn);
     actions.appendChild(rotateBtn);
     actions.appendChild(duplicateBtn);
     actions.appendChild(deleteBtn);
@@ -264,6 +293,30 @@ function handleDragEnd(e) {
     cards.forEach(card => {
         card.classList.remove('drag-over');
     });
+}
+
+// Move page up
+function movePageUp(pageId) {
+    const index = pages.findIndex(p => p.id === pageId);
+    if (index > 0) {
+        // Swap with previous page
+        const temp = pages[index];
+        pages[index] = pages[index - 1];
+        pages[index - 1] = temp;
+        renderPages();
+    }
+}
+
+// Move page down
+function movePageDown(pageId) {
+    const index = pages.findIndex(p => p.id === pageId);
+    if (index >= 0 && index < pages.length - 1) {
+        // Swap with next page
+        const temp = pages[index];
+        pages[index] = pages[index + 1];
+        pages[index + 1] = temp;
+        renderPages();
+    }
 }
 
 // Rotate page
@@ -482,6 +535,48 @@ function handleKeyboardShortcuts(e) {
     // Escape: Close modal
     if (e.key === 'Escape') {
         hideHelpModal();
+    }
+    
+    // Arrow Up: Move focused page up (with Ctrl/Cmd modifier)
+    if ((e.ctrlKey || e.metaKey) && e.key === 'ArrowUp') {
+        e.preventDefault();
+        const activeCard = document.activeElement;
+        if (activeCard && activeCard.classList.contains('page-card')) {
+            const pageId = parseInt(activeCard.dataset.pageId);
+            const currentIndex = pages.findIndex(p => p.id === pageId);
+            if (currentIndex > 0) {
+                movePageUp(pageId);
+                // Re-focus the page after move
+                setTimeout(() => {
+                    const newIndex = currentIndex - 1;
+                    const cards = document.querySelectorAll('.page-card');
+                    if (cards[newIndex]) {
+                        cards[newIndex].focus();
+                    }
+                }, 50);
+            }
+        }
+    }
+    
+    // Arrow Down: Move focused page down (with Ctrl/Cmd modifier)
+    if ((e.ctrlKey || e.metaKey) && e.key === 'ArrowDown') {
+        e.preventDefault();
+        const activeCard = document.activeElement;
+        if (activeCard && activeCard.classList.contains('page-card')) {
+            const pageId = parseInt(activeCard.dataset.pageId);
+            const currentIndex = pages.findIndex(p => p.id === pageId);
+            if (currentIndex >= 0 && currentIndex < pages.length - 1) {
+                movePageDown(pageId);
+                // Re-focus the page after move
+                setTimeout(() => {
+                    const newIndex = currentIndex + 1;
+                    const cards = document.querySelectorAll('.page-card');
+                    if (cards[newIndex]) {
+                        cards[newIndex].focus();
+                    }
+                }, 50);
+            }
+        }
     }
 }
 
