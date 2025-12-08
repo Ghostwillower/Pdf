@@ -28,6 +28,9 @@ const downloadNowBtn = document.getElementById('download-now-btn');
 const pagesContainer = document.getElementById('pages-container');
 const emptyState = document.getElementById('empty-state');
 
+// Store countdown interval for cleanup
+let adCountdownInterval = null;
+
 // Event Listeners
 uploadInput.addEventListener('change', handleFileUpload);
 uploadInputEmpty.addEventListener('change', handleFileUpload);
@@ -462,13 +465,18 @@ function showAdModal() {
     
     // Push AdSense ads (if not already pushed)
     try {
-        (adsbygoogle = window.adsbygoogle || []).push({});
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch (e) {
         console.log('AdSense not loaded or already initialized');
     }
     
+    // Clear any existing countdown interval
+    if (adCountdownInterval) {
+        clearInterval(adCountdownInterval);
+    }
+    
     // Countdown timer
-    const countdownInterval = setInterval(() => {
+    adCountdownInterval = setInterval(() => {
         timeLeft--;
         countdownElement.textContent = timeLeft;
         timerSeconds.textContent = timeLeft;
@@ -478,7 +486,8 @@ function showAdModal() {
         timerBar.style.width = progress + '%';
         
         if (timeLeft <= 0) {
-            clearInterval(countdownInterval);
+            clearInterval(adCountdownInterval);
+            adCountdownInterval = null;
             downloadNowBtn.disabled = false;
             downloadNowBtn.textContent = '✅ Download PDF Now!';
             timerSeconds.textContent = '0';
@@ -490,6 +499,12 @@ function showAdModal() {
 
 // Hide ad modal
 function hideAdModal() {
+    // Clear countdown interval to prevent memory leaks
+    if (adCountdownInterval) {
+        clearInterval(adCountdownInterval);
+        adCountdownInterval = null;
+    }
+    
     adModal.style.display = 'none';
     downloadNowBtn.disabled = true;
     downloadNowBtn.textContent = '⬇️ Download PDF';
@@ -576,7 +591,7 @@ function handleKeyboardShortcuts(e) {
     // Ctrl/Cmd + S: Download PDF
     if ((e.ctrlKey || e.metaKey) && e.key === 's') {
         e.preventDefault();
-        downloadPDF();
+        downloadPDF();  // This now shows the ad modal, not bypassing it
     }
     
     // Ctrl/Cmd + R: Rotate All
