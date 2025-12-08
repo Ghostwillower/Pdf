@@ -43,7 +43,12 @@ cd Pdf
 npm install
 ```
 
-3. Start a local web server:
+3. (Optional) Use the startup script to configure cloudflared tunnel:
+```bash
+./startup.sh
+```
+
+   Or start a local web server manually:
 ```bash
 # Using Python 3
 python3 -m http.server 8080
