@@ -11,12 +11,18 @@ const { PDFDocument, degrees } = window.PDFLib;
 let pages = []; // Array of page objects: {id, sourceIndex, pageNumber, rotation, pdfDoc}
 let loadedPDFs = []; // Array of loaded PDFDocument objects from pdf-lib
 let nextId = 0;
+let selectedPages = new Set(); // Track selected pages for batch operations
+let selectionMode = false; // Toggle selection mode
 
 // DOM Elements
 const uploadInput = document.getElementById('pdf-upload');
 const uploadInputEmpty = document.getElementById('pdf-upload-empty');
 const clearAllBtn = document.getElementById('clear-all');
 const downloadBtn = document.getElementById('download-pdf');
+const insertBlankBtn = document.getElementById('insert-blank');
+const rotateAllBtn = document.getElementById('rotate-all');
+const helpBtn = document.getElementById('help-btn');
+const helpModal = document.getElementById('help-modal');
 const pagesContainer = document.getElementById('pages-container');
 const emptyState = document.getElementById('empty-state');
 
@@ -25,6 +31,19 @@ uploadInput.addEventListener('change', handleFileUpload);
 uploadInputEmpty.addEventListener('change', handleFileUpload);
 clearAllBtn.addEventListener('click', clearAll);
 downloadBtn.addEventListener('click', downloadPDF);
+insertBlankBtn.addEventListener('click', insertBlankPage);
+rotateAllBtn.addEventListener('click', rotateAllPages);
+helpBtn.addEventListener('click', showHelpModal);
+
+// Keyboard shortcuts
+document.addEventListener('keydown', handleKeyboardShortcuts);
+
+// Help modal handlers
+helpModal.addEventListener('click', (e) => {
+    if (e.target === helpModal || e.target.className === 'close') {
+        hideHelpModal();
+    }
+});
 
 // Handle file upload
 async function handleFileUpload(event) {
@@ -157,7 +176,16 @@ function createPageCard(page, index) {
         deletePage(page.id);
     };
 
+    const duplicateBtn = document.createElement('button');
+    duplicateBtn.className = 'btn-duplicate';
+    duplicateBtn.textContent = '📋 Duplicate';
+    duplicateBtn.onclick = (e) => {
+        e.stopPropagation();
+        duplicatePage(page.id);
+    };
+
     actions.appendChild(rotateBtn);
+    actions.appendChild(duplicateBtn);
     actions.appendChild(deleteBtn);
 
     card.appendChild(thumbnailContainer);
@@ -254,6 +282,24 @@ function deletePage(pageId) {
     updateUI();
 }
 
+// Duplicate page
+async function duplicatePage(pageId) {
+    const pageIndex = pages.findIndex(p => p.id === pageId);
+    if (pageIndex === -1) return;
+    
+    const originalPage = pages[pageIndex];
+    
+    // Create a duplicate with a new ID but same properties
+    const duplicatePage = {
+        ...originalPage,
+        id: nextId++
+    };
+    
+    // Insert after the original page
+    pages.splice(pageIndex + 1, 0, duplicatePage);
+    renderPages();
+}
+
 // Clear all pages
 function clearAll() {
     if (pages.length === 0) return;
@@ -265,6 +311,69 @@ function clearAll() {
         renderPages();
         updateUI();
     }
+}
+
+// Insert blank page at the end
+async function insertBlankPage() {
+    try {
+        showLoading();
+        
+        // Create a new PDF with a blank page
+        const blankPdf = await PDFDocument.create();
+        const blankPage = blankPdf.addPage([612, 792]); // US Letter size
+        
+        // Store the blank PDF
+        const sourceIndex = loadedPDFs.length;
+        loadedPDFs.push(blankPdf);
+        
+        // Create a canvas for the blank page thumbnail
+        const canvas = document.createElement('canvas');
+        canvas.width = 306; // Half of 612
+        canvas.height = 396; // Half of 792
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = '#e0e0e0';
+        ctx.strokeRect(0, 0, canvas.width, canvas.height);
+        
+        // Add text to indicate it's a blank page
+        ctx.fillStyle = '#cccccc';
+        ctx.font = '20px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Blank Page', canvas.width / 2, canvas.height / 2);
+        
+        // Add the blank page to pages array
+        pages.push({
+            id: nextId++,
+            sourceIndex: sourceIndex,
+            pageNumber: 1,
+            rotation: 0,
+            pdfDoc: blankPdf,
+            thumbnail: canvas,
+            pdfjsPage: null
+        });
+        
+        renderPages();
+        updateUI();
+        hideLoading();
+    } catch (error) {
+        console.error('Error creating blank page:', error);
+        alert('Error creating blank page. Please try again.');
+        hideLoading();
+    }
+}
+
+// Rotate all pages
+function rotateAllPages() {
+    if (pages.length === 0) {
+        alert('No pages to rotate. Please upload PDFs first.');
+        return;
+    }
+    
+    pages.forEach(page => {
+        page.rotation = (page.rotation + 90) % 360;
+    });
+    renderPages();
 }
 
 // Download combined PDF
@@ -337,6 +446,53 @@ function showLoading() {
 function hideLoading() {
     downloadBtn.disabled = false;
     downloadBtn.innerHTML = '⬇️ Download PDF';
+}
+
+// Keyboard shortcuts handler
+function handleKeyboardShortcuts(e) {
+    // Don't trigger shortcuts when typing in an input
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        return;
+    }
+
+    // Ctrl/Cmd + S: Download PDF
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        downloadPDF();
+    }
+    
+    // Ctrl/Cmd + R: Rotate All
+    if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+        e.preventDefault();
+        rotateAllPages();
+    }
+    
+    // Ctrl/Cmd + B: Insert Blank Page
+    if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+        e.preventDefault();
+        insertBlankPage();
+    }
+    
+    // Delete/Backspace: Clear all (with confirmation)
+    if ((e.key === 'Delete' || e.key === 'Backspace') && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        clearAll();
+    }
+    
+    // Escape: Close modal
+    if (e.key === 'Escape') {
+        hideHelpModal();
+    }
+}
+
+// Show help modal
+function showHelpModal() {
+    helpModal.style.display = 'flex';
+}
+
+// Hide help modal
+function hideHelpModal() {
+    helpModal.style.display = 'none';
 }
 
 // Initialize

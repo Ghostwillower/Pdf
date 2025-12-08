@@ -19,8 +19,11 @@
                         <input type="file" id="pdf-upload" accept=".pdf" multiple hidden>
                         📤 Upload PDFs
                     </label>
+                    <button id="insert-blank" class="btn btn-info">➕ Blank Page</button>
+                    <button id="rotate-all" class="btn btn-secondary">🔄 Rotate All</button>
                     <button id="clear-all" class="btn btn-secondary">🗑️ Clear All</button>
                     <button id="download-pdf" class="btn btn-success">⬇️ Download PDF</button>
+                    <button id="help-btn" class="btn btn-help" title="Keyboard Shortcuts">❓ Help</button>
                 </div>
             </div>
         </header>
@@ -42,6 +45,39 @@
                 <!-- Page cards will be dynamically inserted here -->
             </div>
         </main>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="help-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>⌨️ Keyboard Shortcuts</h2>
+            <div class="shortcuts-list">
+                <div class="shortcut-item">
+                    <kbd>Ctrl/Cmd + S</kbd>
+                    <span>Download PDF</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl/Cmd + R</kbd>
+                    <span>Rotate All Pages</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl/Cmd + B</kbd>
+                    <span>Insert Blank Page</span>
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl/Cmd + Delete</kbd>
+                    <span>Clear All Pages</span>
+                </div>
+            </div>
+            <h3>💡 Tips</h3>
+            <ul class="tips-list">
+                <li>Drag and drop pages to reorder them</li>
+                <li>Upload multiple PDFs at once</li>
+                <li>All processing happens locally in your browser</li>
+                <li>Your PDFs never leave your computer</li>
+            </ul>
+        </div>
     </div>
 
     <script type="module" src="script.js"></script>

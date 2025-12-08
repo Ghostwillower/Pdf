@@ -29,11 +29,22 @@
 ### Managing Pages
 - **Reorder:** Click and drag a page card to move it
 - **Rotate:** Click "🔄 Rotate" to rotate 90° clockwise (click multiple times for 180°, 270°)
+- **Rotate All:** Click "🔄 Rotate All" in the navbar to rotate all pages at once
+- **Duplicate:** Click "📋 Duplicate" to create a copy of any page
 - **Delete:** Click "🗑️ Delete" to remove a page
+- **Insert Blank Page:** Click "➕ Blank Page" to add a blank page at the end
 - **Clear All:** Click "🗑️ Clear All" to remove all pages (confirms first)
+
+### Keyboard Shortcuts
+- **Ctrl/Cmd + S:** Download PDF
+- **Ctrl/Cmd + R:** Rotate All Pages
+- **Ctrl/Cmd + B:** Insert Blank Page
+- **Ctrl/Cmd + Delete:** Clear All Pages
+- **Escape:** Close Help Modal
 
 ### Downloading
 - Click "⬇️ Download PDF" to create and download your edited PDF
+- Or use **Ctrl/Cmd + S** keyboard shortcut
 - The file will be saved as "output.pdf"
 - All rotations and page order will be preserved
 
