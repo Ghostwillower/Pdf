@@ -13,7 +13,6 @@ let loadedPDFs = []; // Array of loaded PDFDocument objects from pdf-lib
 let nextId = 0;
 let selectedPages = new Set(); // Track selected pages for batch operations
 let selectionMode = false; // Toggle selection mode
-let focusedPageIndex = -1; // Track focused page for keyboard navigation
 
 // DOM Elements
 const uploadInput = document.getElementById('pdf-upload');
@@ -144,17 +143,6 @@ function createPageCard(page, index) {
     card.dataset.pageId = page.id;
     card.dataset.index = index;
     card.tabIndex = 0; // Make focusable for keyboard navigation
-    
-    // Track focus for keyboard shortcuts
-    card.addEventListener('focus', () => {
-        focusedPageIndex = index;
-    });
-    
-    card.addEventListener('blur', () => {
-        if (focusedPageIndex === index) {
-            focusedPageIndex = -1;
-        }
-    });
 
     // Thumbnail container
     const thumbnailContainer = document.createElement('div');
@@ -552,32 +540,42 @@ function handleKeyboardShortcuts(e) {
     // Arrow Up: Move focused page up (with Ctrl/Cmd modifier)
     if ((e.ctrlKey || e.metaKey) && e.key === 'ArrowUp') {
         e.preventDefault();
-        if (focusedPageIndex >= 0 && pages.length > focusedPageIndex) {
-            movePageUp(pages[focusedPageIndex].id);
-            // Re-focus the page after move
-            setTimeout(() => {
-                const newIndex = Math.max(0, focusedPageIndex - 1);
-                const cards = document.querySelectorAll('.page-card');
-                if (cards[newIndex]) {
-                    cards[newIndex].focus();
-                }
-            }, 50);
+        const activeCard = document.activeElement;
+        if (activeCard && activeCard.classList.contains('page-card')) {
+            const pageId = parseInt(activeCard.dataset.pageId);
+            const currentIndex = pages.findIndex(p => p.id === pageId);
+            if (currentIndex > 0) {
+                movePageUp(pageId);
+                // Re-focus the page after move
+                setTimeout(() => {
+                    const newIndex = currentIndex - 1;
+                    const cards = document.querySelectorAll('.page-card');
+                    if (cards[newIndex]) {
+                        cards[newIndex].focus();
+                    }
+                }, 50);
+            }
         }
     }
     
     // Arrow Down: Move focused page down (with Ctrl/Cmd modifier)
     if ((e.ctrlKey || e.metaKey) && e.key === 'ArrowDown') {
         e.preventDefault();
-        if (focusedPageIndex >= 0 && pages.length > focusedPageIndex) {
-            movePageDown(pages[focusedPageIndex].id);
-            // Re-focus the page after move
-            setTimeout(() => {
-                const newIndex = Math.min(pages.length - 1, focusedPageIndex + 1);
-                const cards = document.querySelectorAll('.page-card');
-                if (cards[newIndex]) {
-                    cards[newIndex].focus();
-                }
-            }, 50);
+        const activeCard = document.activeElement;
+        if (activeCard && activeCard.classList.contains('page-card')) {
+            const pageId = parseInt(activeCard.dataset.pageId);
+            const currentIndex = pages.findIndex(p => p.id === pageId);
+            if (currentIndex >= 0 && currentIndex < pages.length - 1) {
+                movePageDown(pageId);
+                // Re-focus the page after move
+                setTimeout(() => {
+                    const newIndex = currentIndex + 1;
+                    const cards = document.querySelectorAll('.page-card');
+                    if (cards[newIndex]) {
+                        cards[newIndex].focus();
+                    }
+                }, 50);
+            }
         }
     }
 }
