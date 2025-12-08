@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Knife - Merge, Reorder, and Edit PDFs</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- PDF.js library for rendering thumbnails -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <!-- pdf-lib for assembling PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Top Navigation Bar -->
+        <header class="navbar">
+            <div class="navbar-content">
+                <h1 class="logo">📄 PDF Knife</h1>
+                <div class="navbar-actions">
+                    <label for="pdf-upload" class="btn btn-primary">
+                        <input type="file" id="pdf-upload" accept=".pdf" multiple hidden>
+                        📤 Upload PDFs
+                    </label>
+                    <button id="clear-all" class="btn btn-secondary">🗑️ Clear All</button>
+                    <button id="download-pdf" class="btn btn-success">⬇️ Download PDF</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div id="empty-state" class="empty-state">
+                <div class="empty-state-icon">📂</div>
+                <h2>No PDFs Loaded</h2>
+                <p>Upload one or more PDF files to get started</p>
+                <label for="pdf-upload-empty" class="btn btn-primary btn-large">
+                    <input type="file" id="pdf-upload-empty" accept=".pdf" multiple hidden>
+                    📤 Upload PDFs
+                </label>
+            </div>
+
+            <!-- Pages Grid -->
+            <div id="pages-container" class="pages-grid" style="display: none;">
+                <!-- Page cards will be dynamically inserted here -->
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
