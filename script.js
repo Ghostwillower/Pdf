@@ -23,6 +23,8 @@ const insertBlankBtn = document.getElementById('insert-blank');
 const rotateAllBtn = document.getElementById('rotate-all');
 const helpBtn = document.getElementById('help-btn');
 const helpModal = document.getElementById('help-modal');
+const adModal = document.getElementById('ad-modal');
+const downloadNowBtn = document.getElementById('download-now-btn');
 const pagesContainer = document.getElementById('pages-container');
 const emptyState = document.getElementById('empty-state');
 
@@ -44,6 +46,9 @@ helpModal.addEventListener('click', (e) => {
         hideHelpModal();
     }
 });
+
+// Ad modal handler
+downloadNowBtn.addEventListener('click', proceedWithDownload);
 
 // Handle file upload
 async function handleFileUpload(event) {
@@ -435,6 +440,66 @@ async function downloadPDF() {
         alert('No pages to download. Please upload PDFs first.');
         return;
     }
+
+    // Show ad modal with countdown
+    showAdModal();
+}
+
+// Show ad modal and start countdown
+function showAdModal() {
+    adModal.style.display = 'flex';
+    downloadNowBtn.disabled = true;
+    
+    let timeLeft = 30;
+    const countdownElement = document.getElementById('countdown');
+    const timerSeconds = document.getElementById('timer-seconds');
+    const timerBar = document.getElementById('timer-bar');
+    
+    // Update initial display
+    countdownElement.textContent = timeLeft;
+    timerSeconds.textContent = timeLeft;
+    timerBar.style.width = '0%';
+    
+    // Push AdSense ads (if not already pushed)
+    try {
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+        console.log('AdSense not loaded or already initialized');
+    }
+    
+    // Countdown timer
+    const countdownInterval = setInterval(() => {
+        timeLeft--;
+        countdownElement.textContent = timeLeft;
+        timerSeconds.textContent = timeLeft;
+        
+        // Update progress bar
+        const progress = ((30 - timeLeft) / 30) * 100;
+        timerBar.style.width = progress + '%';
+        
+        if (timeLeft <= 0) {
+            clearInterval(countdownInterval);
+            downloadNowBtn.disabled = false;
+            downloadNowBtn.textContent = '✅ Download PDF Now!';
+            timerSeconds.textContent = '0';
+            countdownElement.textContent = '0';
+            timerBar.style.width = '100%';
+        }
+    }, 1000);
+}
+
+// Hide ad modal
+function hideAdModal() {
+    adModal.style.display = 'none';
+    downloadNowBtn.disabled = true;
+    downloadNowBtn.textContent = '⬇️ Download PDF';
+}
+
+// Proceed with actual download after ad
+async function proceedWithDownload() {
+    if (downloadNowBtn.disabled) return;
+    
+    hideAdModal();
 
     try {
         showLoading();
