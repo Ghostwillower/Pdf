@@ -1,5 +1,8 @@
+// Import PDF.js as ES module
+import * as pdfjsLib from './lib/pdf.min.mjs';
+
 // Initialize PDF.js worker
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+pdfjsLib.GlobalWorkerOptions.workerSrc = './lib/pdf.worker.min.mjs';
 
 // Global state
 let pages = []; // Array of page objects: {id, sourceIndex, pageNumber, rotation, pdfDoc}
