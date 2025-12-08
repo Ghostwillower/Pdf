@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Editor - Free Online PDF Tools</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>📄 PDF Editor</h1>
+            <p>Free Online PDF Tools - View, Edit, Merge, Split & More</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- File Upload Section -->
+        <section id="upload-section" class="section">
+            <div class="upload-area" id="upload-area">
+                <div class="upload-icon">📁</div>
+                <h2>Upload PDF File</h2>
+                <p>Drag & drop your PDF file here or click to browse</p>
+                <input type="file" id="pdf-upload" accept=".pdf" multiple>
+                <label for="pdf-upload" class="btn btn-primary">Choose PDF File(s)</label>
+            </div>
+        </section>
+
+        <!-- Tools Section -->
+        <section id="tools-section" class="section hidden">
+            <div class="tools-container">
+                <h2>PDF Tools</h2>
+                <div class="tools-grid">
+                    <button class="tool-btn" onclick="showTool('view')">
+                        <span class="tool-icon">👁️</span>
+                        <span>View PDF</span>
+                    </button>
+                    <button class="tool-btn" onclick="showTool('annotate')">
+                        <span class="tool-icon">✏️</span>
+                        <span>Annotate</span>
+                    </button>
+                    <button class="tool-btn" onclick="showTool('text')">
+                        <span class="tool-icon">📝</span>
+                        <span>Add Text</span>
+                    </button>
+                    <button class="tool-btn" onclick="showTool('draw')">
+                        <span class="tool-icon">🎨</span>
+                        <span>Draw</span>
+                    </button>
+                    <button class="tool-btn" onclick="showTool('rotate')">
+                        <span class="tool-icon">🔄</span>
+                        <span>Rotate Pages</span>
+                    </button>
+                    <button class="tool-btn" onclick="showTool('delete')">
+                        <span class="tool-icon">🗑️</span>
+                        <span>Delete Pages</span>
+                    </button>
+                    <button class="tool-btn" onclick="showTool('merge')">
+                        <span class="tool-icon">🔗</span>
+                        <span>Merge PDFs</span>
+                    </button>
+                    <button class="tool-btn" onclick="showTool('split')">
+                        <span class="tool-icon">✂️</span>
+                        <span>Split PDF</span>
+                    </button>
+                    <button class="tool-btn" onclick="showTool('extract')">
+                        <span class="tool-icon">📋</span>
+                        <span>Extract Text</span>
+                    </button>
+                    <button class="tool-btn btn-download" onclick="downloadPDF()">
+                        <span class="tool-icon">💾</span>
+                        <span>Download</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Editor Section -->
+        <section id="editor-section" class="section hidden">
+            <div class="editor-container">
+                <!-- Toolbar -->
+                <div id="toolbar" class="toolbar hidden">
+                    <div class="toolbar-group">
+                        <button onclick="prevPage()" class="btn btn-sm">◀ Previous</button>
+                        <span id="page-info">Page 1 of 1</span>
+                        <button onclick="nextPage()" class="btn btn-sm">Next ▶</button>
+                    </div>
+                    <div class="toolbar-group">
+                        <button onclick="zoomOut()" class="btn btn-sm">-</button>
+                        <span id="zoom-level">100%</span>
+                        <button onclick="zoomIn()" class="btn btn-sm">+</button>
+                    </div>
+                    <div class="toolbar-group" id="annotation-tools" class="hidden">
+                        <label>Color:</label>
+                        <input type="color" id="color-picker" value="#ff0000">
+                        <label>Size:</label>
+                        <input type="range" id="size-slider" min="1" max="20" value="3">
+                    </div>
+                    <div class="toolbar-group" id="text-tools" class="hidden">
+                        <input type="text" id="text-input" placeholder="Enter text...">
+                        <label>Size:</label>
+                        <input type="number" id="text-size" min="8" max="72" value="16">
+                    </div>
+                </div>
+
+                <!-- Canvas Container -->
+                <div class="canvas-container">
+                    <canvas id="pdf-canvas"></canvas>
+                    <canvas id="annotation-canvas"></canvas>
+                </div>
+
+                <!-- Page Thumbnails -->
+                <div id="page-thumbnails" class="page-thumbnails hidden"></div>
+
+                <!-- Text Extraction Display -->
+                <div id="text-output" class="text-output hidden">
+                    <h3>Extracted Text</h3>
+                    <textarea id="extracted-text" readonly></textarea>
+                    <button onclick="copyText()" class="btn btn-primary">Copy Text</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Status Messages -->
+        <div id="status-message" class="status-message"></div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 PDF Editor. All files are processed locally in your browser.</p>
+            <p>Your privacy is protected - files are never uploaded to any server.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
