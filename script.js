@@ -21,6 +21,8 @@ const clearAllBtn = document.getElementById('clear-all');
 const downloadBtn = document.getElementById('download-pdf');
 const insertBlankBtn = document.getElementById('insert-blank');
 const rotateAllBtn = document.getElementById('rotate-all');
+const helpBtn = document.getElementById('help-btn');
+const helpModal = document.getElementById('help-modal');
 const pagesContainer = document.getElementById('pages-container');
 const emptyState = document.getElementById('empty-state');
 
@@ -31,6 +33,17 @@ clearAllBtn.addEventListener('click', clearAll);
 downloadBtn.addEventListener('click', downloadPDF);
 insertBlankBtn.addEventListener('click', insertBlankPage);
 rotateAllBtn.addEventListener('click', rotateAllPages);
+helpBtn.addEventListener('click', showHelpModal);
+
+// Keyboard shortcuts
+document.addEventListener('keydown', handleKeyboardShortcuts);
+
+// Help modal handlers
+helpModal.addEventListener('click', (e) => {
+    if (e.target === helpModal || e.target.className === 'close') {
+        hideHelpModal();
+    }
+});
 
 // Handle file upload
 async function handleFileUpload(event) {
@@ -433,6 +446,53 @@ function showLoading() {
 function hideLoading() {
     downloadBtn.disabled = false;
     downloadBtn.innerHTML = '⬇️ Download PDF';
+}
+
+// Keyboard shortcuts handler
+function handleKeyboardShortcuts(e) {
+    // Don't trigger shortcuts when typing in an input
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        return;
+    }
+
+    // Ctrl/Cmd + S: Download PDF
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        downloadPDF();
+    }
+    
+    // Ctrl/Cmd + R: Rotate All
+    if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+        e.preventDefault();
+        rotateAllPages();
+    }
+    
+    // Ctrl/Cmd + B: Insert Blank Page
+    if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+        e.preventDefault();
+        insertBlankPage();
+    }
+    
+    // Delete/Backspace: Clear all (with confirmation)
+    if ((e.key === 'Delete' || e.key === 'Backspace') && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        clearAll();
+    }
+    
+    // Escape: Close modal
+    if (e.key === 'Escape') {
+        hideHelpModal();
+    }
+}
+
+// Show help modal
+function showHelpModal() {
+    helpModal.style.display = 'flex';
+}
+
+// Hide help modal
+function hideHelpModal() {
+    helpModal.style.display = 'none';
 }
 
 // Initialize
