@@ -123,7 +123,7 @@ async function loadPDF(file) {
 
 // Generate thumbnail from pdf.js page
 async function generateThumbnail(page) {
-    const viewport = page.getViewport({ scale: 0.5 });
+    const viewport = page.getViewport({ scale: 1.5 });
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
     
@@ -419,8 +419,8 @@ async function insertBlankPage() {
         
         // Create a canvas for the blank page thumbnail
         const canvas = document.createElement('canvas');
-        canvas.width = 306; // Half of 612
-        canvas.height = 396; // Half of 792
+        canvas.width = 918; // 1.5x of 612
+        canvas.height = 1188; // 1.5x of 792
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -429,7 +429,7 @@ async function insertBlankPage() {
         
         // Add text to indicate it's a blank page
         ctx.fillStyle = '#cccccc';
-        ctx.font = '20px Arial';
+        ctx.font = '60px Arial';
         ctx.textAlign = 'center';
         ctx.fillText('Blank Page', canvas.width / 2, canvas.height / 2);
         
@@ -493,11 +493,14 @@ function showAdModal() {
     timerSeconds.textContent = timeLeft;
     timerBar.style.width = '0%';
     
-    // Push AdSense ads (if not already pushed)
-    try {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-        console.log('AdSense not loaded or already initialized');
+    // Initialize AdSense ads only once
+    const adContainer = document.querySelector('.ad-container ins.adsbygoogle');
+    if (adContainer && !adContainer.hasAttribute('data-adsbygoogle-status')) {
+        try {
+            (window.adsbygoogle = window.adsbygoogle || []).push({});
+        } catch (e) {
+            console.log('AdSense initialization error:', e);
+        }
     }
     
     // Clear any existing countdown interval
