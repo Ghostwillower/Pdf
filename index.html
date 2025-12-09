@@ -5,60 +5,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDF Knife - Merge, Reorder, and Edit PDFs</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Google AdSense -->
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google AdSense for download modal -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2651144555602101"
      crossorigin="anonymous"></script>
     <!-- pdf-lib for assembling PDF -->
     <script src="lib/pdf-lib.min.js"></script>
-    <!-- Google AdSense - Replace data-ad-client with your own AdSense publisher ID -->
-    <!-- IMPORTANT: This placeholder ID will not work. See ADSENSE_SETUP.md for configuration instructions -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
-            crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="container">
+    <div class="app-wrapper">
         <!-- Top Navigation Bar -->
         <header class="navbar">
             <div class="navbar-content">
-                <h1 class="logo">📄 PDF Knife</h1>
+                <div class="logo-container">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8L14 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M14 2V8H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9 15H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M9 11H10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <h1 class="logo">PDF Knife</h1>
+                    <span class="free-badge">100% FREE</span>
+                </div>
                 <div class="navbar-actions">
                     <label for="pdf-upload" class="btn btn-primary">
                         <input type="file" id="pdf-upload" accept=".pdf" multiple hidden>
-                        📤 Upload PDFs
+                        <i class="fa-solid fa-upload"></i> Upload PDFs
                     </label>
-                    <button id="insert-blank" class="btn btn-info">➕ Blank Page</button>
-                    <button id="rotate-all" class="btn btn-secondary">🔄 Rotate All</button>
-                    <button id="clear-all" class="btn btn-secondary">🗑️ Clear All</button>
-                    <button id="download-pdf" class="btn btn-success">⬇️ Download PDF</button>
-                    <button id="help-btn" class="btn btn-help" title="Keyboard Shortcuts">❓ Help</button>
+                    <button id="insert-blank" class="btn btn-info"><i class="fa-solid fa-file-circle-plus"></i> Blank Page</button>
+                    <button id="rotate-all" class="btn btn-secondary"><i class="fa-solid fa-rotate"></i> Rotate All</button>
+                    <button id="clear-all" class="btn btn-danger"><i class="fa-solid fa-trash-can"></i> Clear All</button>
+                    <button id="download-pdf" class="btn btn-success"><i class="fa-solid fa-download"></i> Download PDF</button>
+                    <button id="help-btn" class="btn btn-help" title="Keyboard Shortcuts" aria-label="Show keyboard shortcuts and help"><i class="fa-solid fa-circle-question"></i></button>
                 </div>
             </div>
         </header>
 
-        <!-- Main Content Area -->
-        <main class="main-content">
-            <div id="empty-state" class="empty-state">
-                <div class="empty-state-icon">📂</div>
-                <h2>No PDFs Loaded</h2>
-                <p>Upload one or more PDF files to get started</p>
-                <label for="pdf-upload-empty" class="btn btn-primary btn-large">
-                    <input type="file" id="pdf-upload-empty" accept=".pdf" multiple hidden>
-                    📤 Upload PDFs
-                </label>
-            </div>
+        <div class="main-wrapper">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-content">
+                    <div class="free-info">
+                        <h3><i class="fa-solid fa-circle-check"></i> Totally Free</h3>
+                        <p>No registration, no fees, no limits. All features are completely free to use.</p>
+                    </div>
+                    
+                    <div class="privacy-info">
+                        <h3><i class="fa-solid fa-shield-halved"></i> Private & Secure</h3>
+                        <p>Your PDFs never leave your device. All processing happens locally in your browser.</p>
+                    </div>
+                    
+                    <div class="features-info">
+                        <h3><i class="fa-solid fa-star"></i> Features</h3>
+                        <ul>
+                            <li><i class="fa-solid fa-check"></i> Merge PDFs</li>
+                            <li><i class="fa-solid fa-check"></i> Reorder Pages</li>
+                            <li><i class="fa-solid fa-check"></i> Rotate Pages</li>
+                            <li><i class="fa-solid fa-check"></i> Delete Pages</li>
+                            <li><i class="fa-solid fa-check"></i> Add Blank Pages</li>
+                            <li><i class="fa-solid fa-check"></i> Preview Pages</li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
 
-            <!-- Pages Grid -->
-            <div id="pages-container" class="pages-grid" style="display: none;">
-                <!-- Page cards will be dynamically inserted here -->
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <div id="empty-state" class="empty-state">
+                    <i class="fa-solid fa-folder-open empty-state-icon"></i>
+                    <h2>No PDFs Loaded</h2>
+                    <p>Upload one or more PDF files to get started</p>
+                    <label for="pdf-upload-empty" class="btn btn-primary btn-large">
+                        <input type="file" id="pdf-upload-empty" accept=".pdf" multiple hidden>
+                        <i class="fa-solid fa-upload"></i> Upload PDFs
+                    </label>
+                </div>
+
+                <!-- Pages Grid -->
+                <div id="pages-container" class="pages-grid" style="display: none;">
+                    <!-- Page cards will be dynamically inserted here -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Page Preview Modal -->
+    <div id="preview-modal" class="modal" style="display: none;">
+        <div class="modal-content preview-modal-content">
+            <span class="close preview-close">&times;</span>
+            <h2><i class="fa-solid fa-magnifying-glass"></i> Page Preview</h2>
+            <div id="preview-container" class="preview-container">
+                <!-- Large preview will be inserted here -->
             </div>
-        </main>
+            <div class="preview-info">
+                <p id="preview-page-info"></p>
+            </div>
+        </div>
     </div>
 
     <!-- Help Modal -->
     <div id="help-modal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>⌨️ Keyboard Shortcuts</h2>
+            <h2><i class="fa-solid fa-keyboard"></i> Keyboard Shortcuts</h2>
             <div class="shortcuts-list">
                 <div class="shortcut-item">
                     <kbd>Ctrl/Cmd + S</kbd>
@@ -85,14 +135,15 @@
                     <span>Clear All Pages</span>
                 </div>
             </div>
-            <h3>💡 Tips</h3>
+            <h3><i class="fa-solid fa-lightbulb"></i> Tips</h3>
             <ul class="tips-list">
-                <li>Drag and drop pages to reorder them</li>
-                <li>Use ⬆️⬇️ buttons to move pages up or down</li>
+                <li>Drag and drop pages to reorder them with snap-to-grid positioning</li>
+                <li>Use arrow buttons to move pages up or down</li>
                 <li>Click on a page and use Ctrl/Cmd + Arrow keys to move it</li>
                 <li>Upload multiple PDFs at once</li>
                 <li>All processing happens locally in your browser</li>
                 <li>Your PDFs never leave your computer</li>
+                <li>Click on a page thumbnail for a larger preview</li>
             </ul>
         </div>
     </div>
@@ -100,16 +151,15 @@
     <!-- Ad Modal -->
     <div id="ad-modal" class="modal" style="display: none;">
         <div class="modal-content ad-modal-content">
-            <h2>📄 Preparing Your PDF Download...</h2>
+            <h2><i class="fa-solid fa-file-arrow-down"></i> Preparing Your PDF Download...</h2>
             <p class="ad-message">Please wait <span id="countdown">30</span> seconds while we prepare your file.</p>
             
             <!-- Google AdSense Ad Unit -->
-            <!-- IMPORTANT: Replace these placeholder IDs with your actual AdSense IDs -->
-            <!-- See ADSENSE_SETUP.md for detailed setup instructions -->
+            <!-- NOTE: Replace 'XXXXXXXXXX' with your actual ad slot ID from AdSense -->
             <div class="ad-container">
                 <ins class="adsbygoogle"
                      style="display:block"
-                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                     data-ad-client="ca-pub-2651144555602101"
                      data-ad-slot="XXXXXXXXXX"
                      data-ad-format="auto"
                      data-full-width-responsive="true"></ins>
@@ -123,7 +173,7 @@
             </div>
             
             <button id="download-now-btn" class="btn btn-success btn-large" disabled>
-                ⬇️ Download PDF
+                <i class="fa-solid fa-download"></i> Download PDF
             </button>
         </div>
     </div>

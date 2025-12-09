@@ -27,6 +27,7 @@ const adModal = document.getElementById('ad-modal');
 const downloadNowBtn = document.getElementById('download-now-btn');
 const pagesContainer = document.getElementById('pages-container');
 const emptyState = document.getElementById('empty-state');
+const previewModal = document.getElementById('preview-modal');
 
 // Store countdown interval for cleanup
 let adCountdownInterval = null;
@@ -47,6 +48,13 @@ document.addEventListener('keydown', handleKeyboardShortcuts);
 helpModal.addEventListener('click', (e) => {
     if (e.target === helpModal || e.target.className === 'close') {
         hideHelpModal();
+    }
+});
+
+// Preview modal handlers
+previewModal.addEventListener('click', (e) => {
+    if (e.target === previewModal || e.target.classList.contains('preview-close')) {
+        hidePreviewModal();
     }
 });
 
@@ -159,6 +167,9 @@ function createPageCard(page, index) {
     // Clone the canvas for display
     const thumbnailCanvas = page.thumbnail.cloneNode(true);
     thumbnailContainer.appendChild(thumbnailCanvas);
+    
+    // Add click event for preview
+    thumbnailContainer.addEventListener('click', () => showPagePreview(page));
 
     // Page info
     const pageInfo = document.createElement('div');
@@ -171,7 +182,7 @@ function createPageCard(page, index) {
 
     const moveUpBtn = document.createElement('button');
     moveUpBtn.className = 'btn-move-up';
-    moveUpBtn.textContent = '⬆️';
+    moveUpBtn.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
     moveUpBtn.title = 'Move Up';
     moveUpBtn.onclick = (e) => {
         e.stopPropagation();
@@ -179,12 +190,11 @@ function createPageCard(page, index) {
     };
     if (index === 0) {
         moveUpBtn.disabled = true;
-        moveUpBtn.style.opacity = '0.5';
     }
 
     const moveDownBtn = document.createElement('button');
     moveDownBtn.className = 'btn-move-down';
-    moveDownBtn.textContent = '⬇️';
+    moveDownBtn.innerHTML = '<i class="fa-solid fa-arrow-down"></i>';
     moveDownBtn.title = 'Move Down';
     moveDownBtn.onclick = (e) => {
         e.stopPropagation();
@@ -192,12 +202,12 @@ function createPageCard(page, index) {
     };
     if (index === pages.length - 1) {
         moveDownBtn.disabled = true;
-        moveDownBtn.style.opacity = '0.5';
     }
 
     const rotateBtn = document.createElement('button');
     rotateBtn.className = 'btn-rotate';
-    rotateBtn.textContent = '🔄 Rotate';
+    rotateBtn.innerHTML = '<i class="fa-solid fa-rotate-right"></i>';
+    rotateBtn.title = 'Rotate';
     rotateBtn.onclick = (e) => {
         e.stopPropagation();
         rotatePage(page.id);
@@ -205,7 +215,8 @@ function createPageCard(page, index) {
 
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'btn-delete';
-    deleteBtn.textContent = '🗑️ Delete';
+    deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+    deleteBtn.title = 'Delete';
     deleteBtn.onclick = (e) => {
         e.stopPropagation();
         deletePage(page.id);
@@ -213,7 +224,8 @@ function createPageCard(page, index) {
 
     const duplicateBtn = document.createElement('button');
     duplicateBtn.className = 'btn-duplicate';
-    duplicateBtn.textContent = '📋 Duplicate';
+    duplicateBtn.innerHTML = '<i class="fa-solid fa-copy"></i>';
+    duplicateBtn.title = 'Duplicate';
     duplicateBtn.onclick = (e) => {
         e.stopPropagation();
         duplicatePage(page.id);
@@ -247,6 +259,7 @@ function setupDragAndDrop() {
 }
 
 let draggedElement = null;
+let dropIndicator = null;
 
 function handleDragStart(e) {
     draggedElement = this;
@@ -300,7 +313,24 @@ function handleDragEnd(e) {
     const cards = document.querySelectorAll('.page-card');
     cards.forEach(card => {
         card.classList.remove('drag-over');
+        card.classList.remove('snap-indicator');
     });
+}
+
+// Get the element after which the dragged element should be placed (unused - kept for potential future enhancement)
+function getDragAfterElement(container, y) {
+    const draggableElements = [...container.querySelectorAll('.page-card:not(.dragging)')];
+    
+    return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        
+        if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+        } else {
+            return closest;
+        }
+    }, { offset: Number.NEGATIVE_INFINITY }).element;
 }
 
 // Move page up
@@ -489,7 +519,7 @@ function showAdModal() {
             clearInterval(adCountdownInterval);
             adCountdownInterval = null;
             downloadNowBtn.disabled = false;
-            downloadNowBtn.textContent = '✅ Download PDF Now!';
+            downloadNowBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Download PDF Now!';
             timerSeconds.textContent = '0';
             countdownElement.textContent = '0';
             timerBar.style.width = '100%';
@@ -507,7 +537,7 @@ function hideAdModal() {
     
     adModal.style.display = 'none';
     downloadNowBtn.disabled = true;
-    downloadNowBtn.textContent = '⬇️ Download PDF';
+    downloadNowBtn.innerHTML = '<i class="fa-solid fa-download"></i> Download PDF';
 }
 
 // Proceed with actual download after ad
@@ -578,7 +608,7 @@ function showLoading() {
 // Hide loading indicator
 function hideLoading() {
     downloadBtn.disabled = false;
-    downloadBtn.innerHTML = '⬇️ Download PDF';
+    downloadBtn.innerHTML = '<i class="fa-solid fa-download"></i> Download PDF';
 }
 
 // Keyboard shortcuts handler
@@ -668,6 +698,62 @@ function showHelpModal() {
 // Hide help modal
 function hideHelpModal() {
     helpModal.style.display = 'none';
+}
+
+// Show page preview modal
+async function showPagePreview(page) {
+    const previewContainer = document.getElementById('preview-container');
+    const previewInfo = document.getElementById('preview-page-info');
+    
+    // Clear previous content
+    previewContainer.innerHTML = '';
+    
+    // Generate a larger preview
+    try {
+        let canvas;
+        if (page.pdfjsPage) {
+            // Use pdf.js page for rendering
+            const viewport = page.pdfjsPage.getViewport({ scale: 2.0 });
+            canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            const renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+
+            await page.pdfjsPage.render(renderContext).promise;
+        } else {
+            // For blank pages, use a scaled version of the thumbnail
+            canvas = page.thumbnail.cloneNode(true);
+            canvas.style.transform = 'scale(2)';
+        }
+        
+        // Apply rotation
+        if (page.rotation !== 0) {
+            canvas.className = `rotate-${page.rotation}`;
+        }
+        
+        previewContainer.appendChild(canvas);
+        
+        // Update info
+        const pageIndex = pages.findIndex(p => p.id === page.id);
+        previewInfo.textContent = `Page ${pageIndex + 1} of ${pages.length}`;
+        
+        // Show modal
+        previewModal.style.display = 'flex';
+    } catch (error) {
+        console.error('Error showing preview:', error);
+        alert('Error showing preview. Please try again.');
+    }
+}
+
+// Hide preview modal
+function hidePreviewModal() {
+    previewModal.style.display = 'none';
 }
 
 // Initialize
