@@ -32,7 +32,7 @@ html {
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
     min-height: 100vh;
     color: var(--text-dark);
 }
@@ -623,11 +623,6 @@ body {
 
 .tips-list li {
     padding-left: 0.5rem;
-}
-
-.btn-large {
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
 }
 
 /* Rotation Classes */
