@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="style.css">
     <!-- pdf-lib for assembling PDF -->
     <script src="lib/pdf-lib.min.js"></script>
+    <!-- Google AdSense - Replace data-ad-client with your own AdSense publisher ID -->
+    <!-- IMPORTANT: This placeholder ID will not work. See ADSENSE_SETUP.md for configuration instructions -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+            crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="container">
@@ -87,6 +91,37 @@
                 <li>All processing happens locally in your browser</li>
                 <li>Your PDFs never leave your computer</li>
             </ul>
+        </div>
+    </div>
+
+    <!-- Ad Modal -->
+    <div id="ad-modal" class="modal" style="display: none;">
+        <div class="modal-content ad-modal-content">
+            <h2>📄 Preparing Your PDF Download...</h2>
+            <p class="ad-message">Please wait <span id="countdown">30</span> seconds while we prepare your file.</p>
+            
+            <!-- Google AdSense Ad Unit -->
+            <!-- IMPORTANT: Replace these placeholder IDs with your actual AdSense IDs -->
+            <!-- See ADSENSE_SETUP.md for detailed setup instructions -->
+            <div class="ad-container">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                     data-ad-slot="XXXXXXXXXX"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+            </div>
+            
+            <div class="ad-timer">
+                <div class="timer-progress">
+                    <div id="timer-bar" class="timer-bar"></div>
+                </div>
+                <p class="timer-text">Your download will begin in <strong id="timer-seconds">30</strong> seconds</p>
+            </div>
+            
+            <button id="download-now-btn" class="btn btn-success btn-large" disabled>
+                ⬇️ Download PDF
+            </button>
         </div>
     </div>
 
