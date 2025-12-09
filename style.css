@@ -241,7 +241,7 @@ body {
 .privacy-info h3 {
     font-size: 0.875rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--bg-white);
     margin-bottom: 0.5rem;
     display: flex;
     align-items: center;
@@ -249,11 +249,11 @@ body {
 }
 
 .free-info h3 i {
-    color: #ffffff;
+    color: var(--bg-white);
 }
 
 .privacy-info h3 i {
-    color: #ffffff;
+    color: var(--bg-white);
 }
 
 .features-info {
@@ -268,7 +268,7 @@ body {
 .features-info h3 {
     font-size: 0.875rem;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--bg-white);
     margin-bottom: 0.75rem;
     display: flex;
     align-items: center;
@@ -276,7 +276,7 @@ body {
 }
 
 .features-info h3 i {
-    color: #ffffff;
+    color: var(--bg-white);
 }
 
 .features-info ul {
@@ -327,7 +327,7 @@ body {
 .empty-state-icon {
     font-size: 4rem;
     margin-bottom: 1rem;
-    color: #1f2937;
+    color: var(--text-dark);
 }
 
 .empty-state h2 {
