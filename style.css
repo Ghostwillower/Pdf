@@ -334,11 +334,13 @@ body {
     color: var(--text-dark);
     margin-bottom: 0.5rem;
     font-size: 1.5rem;
+    font-weight: 700;
 }
 
 .empty-state p {
     color: var(--text-muted);
     margin-bottom: 2rem;
+    font-size: 1rem;
 }
 
 /* Pages Grid */
@@ -346,7 +348,7 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 1.5rem;
-    padding: 0.5rem;
+    padding: 0;
 }
 
 /* Page Card */
@@ -369,7 +371,7 @@ body {
 }
 
 .page-card:focus {
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
     border-color: var(--primary-color);
 }
 
