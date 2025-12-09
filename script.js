@@ -273,15 +273,6 @@ function handleDragOver(e) {
         e.preventDefault();
     }
     e.dataTransfer.dropEffect = 'move';
-    
-    // Show snap indicator
-    const afterElement = getDragAfterElement(pagesContainer, e.clientY);
-    if (afterElement == null) {
-        pagesContainer.appendChild(draggedElement);
-    } else {
-        pagesContainer.insertBefore(draggedElement, afterElement);
-    }
-    
     return false;
 }
 
@@ -326,7 +317,7 @@ function handleDragEnd(e) {
     });
 }
 
-// Get the element after which the dragged element should be placed
+// Get the element after which the dragged element should be placed (unused - kept for potential future enhancement)
 function getDragAfterElement(container, y) {
     const draggableElements = [...container.querySelectorAll('.page-card:not(.dragging)')];
     
